@@ -22,7 +22,7 @@
 		</StackPanel>
 		<Grid ColumnDefinitions="auto, auto" RowDefinitions="auto, auto" HorizontalAlignment="Center">
 			<StackPanel Orientation="Horizontal" Grid.Column="0">
-				<TextBox Margin="5" Width="50" Watermark=""></TextBox>
+				<TextBox Text="{Binding MaxDepthViewModel.MaxDepth}" Margin="5" Width="50"/>
 				<Label VerticalAlignment="Center">Max Depth</Label>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Grid.Column="1">

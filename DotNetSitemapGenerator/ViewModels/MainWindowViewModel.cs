@@ -17,7 +17,12 @@ namespace DotNetSitemapGenerator.ViewModels
         private CurrentOperationViewModel _CurrentOperationViewModel { get; }
         private SaveDirectoryViewModel _SaveDirectoryViewModel { get; }
         private CurrentProgessViewModel _CurrentProgessViewModel { get; }
+        private MaxDepthViewModel _MaxDepthViewModel { get; }
 
+        public MaxDepthViewModel MaxDepthViewModel
+        {
+            get { return _MaxDepthViewModel; }
+        }
         public CurrentOperationViewModel CurrentOperationViewModel
         {
             get { return _CurrentOperationViewModel; }
@@ -38,6 +43,7 @@ namespace DotNetSitemapGenerator.ViewModels
             _CurrentOperationViewModel = new CurrentOperationViewModel();
             _SaveDirectoryViewModel = new SaveDirectoryViewModel();
             _CurrentProgessViewModel = new CurrentProgessViewModel();
+            _MaxDepthViewModel = new MaxDepthViewModel();
         }
 
         public async void StartGenerating()
@@ -46,6 +52,8 @@ namespace DotNetSitemapGenerator.ViewModels
             List<Uri> goodUris = new List<Uri>();
             List<Uri> badUris = new List<Uri>();
             Queue<Uri> queuedUris = new Queue<Uri>();
+
+            MaxDepth = (int)MaxDepthViewModel.MaxDepth;
 
             try
             {
@@ -101,25 +109,25 @@ namespace DotNetSitemapGenerator.ViewModels
                     //update the progress
                     CurrentProgessViewModel.CurrentProgress = (int)((float)goodUris.Count / (float)MaxDepth * 100f);
                 }
+
+                CurrentProgessViewModel.CurrentProgress = 100;
+                CurrentOperationViewModel.CurrentOperation = "Generating sitemap";
+
+                //generate the sitemap
+                string sitemap = SitemapGenerator.GenerateSitemap(goodUris);
+                //save it to a file asynchronously
+                CurrentOperationViewModel.CurrentOperation = "Saving sitemap";
+                StreamWriter writer = new StreamWriter(SaveDirectoryViewModel.SaveDirectory);
+                await writer.WriteAsync(sitemap);
+                writer.Close();
+
+
+                //Finished
+                CurrentOperationViewModel.CurrentOperation = "Done!";
             } catch (Exception ex)
             {
                 CurrentOperationViewModel.CurrentOperation = "Error: " + ex.Message;
-                return;
             }
-
-            CurrentProgessViewModel.CurrentProgress = 100;
-            CurrentOperationViewModel.CurrentOperation = "Generating sitemap";
-
-            //generate the sitemap
-            string sitemap = SitemapGenerator.GenerateSitemap(goodUris);
-
-            //save it to a file asynchronously
-            CurrentOperationViewModel.CurrentOperation = "Saving sitemap";
-            StreamWriter writer = new StreamWriter(SaveDirectoryViewModel.SaveDirectory);
-            await writer.WriteAsync(sitemap);
-            writer.Close();
-
-            CurrentOperationViewModel.CurrentOperation = "Done!";
         }
 
         public async void SetSaveFile()

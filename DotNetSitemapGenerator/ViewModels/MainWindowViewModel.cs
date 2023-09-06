@@ -6,7 +6,6 @@ namespace DotNetSitemapGenerator.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public string Greeting => "Welcome to Avalonia!";
         public string RequestedURL { get; set; } = "http://dev.localhost";
         public CurrentOperationViewModel CurrentOperationViewModel { get; } = new CurrentOperationViewModel();
 

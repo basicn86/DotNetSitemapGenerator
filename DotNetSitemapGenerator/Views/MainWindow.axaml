@@ -20,10 +20,20 @@
 			<TextBox Text="{Binding SaveDirectoryViewModel.SaveDirectory}" Watermark="Save Directory" Width="420"></TextBox>
 			<Button Command="{Binding SetSaveFile}">Open</Button>
 		</StackPanel>
-		<StackPanel Orientation="Horizontal">
-		    <Label VerticalAlignment="Center">Max Depth</Label>
-		    <TextBox Width="50" Watermark="Max Depth"></TextBox>
-		</StackPanel>
+		<Grid ColumnDefinitions="auto, auto" RowDefinitions="auto, auto" HorizontalAlignment="Center">
+			<StackPanel Orientation="Horizontal" Grid.Column="0">
+				<TextBox Margin="5" Width="50" Watermark=""></TextBox>
+				<Label VerticalAlignment="Center">Max Depth</Label>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Grid.Column="1">
+				<TextBox Margin="5" Width="50" Watermark=""></TextBox>
+				<Label VerticalAlignment="Center">Crawl Delay</Label>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
+				<CheckBox IsChecked="True" Margin="5"></CheckBox>
+				<Label VerticalAlignment="Center">Follow Robots.txt</Label>
+			</StackPanel>
+		</Grid>
 		<Button Command="{Binding StartGenerating}">Click me</Button>
 		<TextBlock Text="{Binding CurrentOperationViewModel.CurrentOperation}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		<ProgressBar Value="{Binding CurrentProgessViewModel.CurrentProgress}" Height="12" Width="500"/>

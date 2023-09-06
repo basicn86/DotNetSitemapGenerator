@@ -104,6 +104,7 @@ namespace DotNetSitemapGenerator.ViewModels
             } catch (Exception ex)
             {
                 CurrentOperationViewModel.CurrentOperation = "Error: " + ex.Message;
+                return;
             }
 
             CurrentProgessViewModel.CurrentProgress = 100;

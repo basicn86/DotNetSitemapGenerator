@@ -25,6 +25,8 @@ namespace DotNetSitemapGenerator.Utilities
             List<Uri> links = new List<Uri>();
             HtmlNodeCollection? nodes = doc.DocumentNode.SelectNodes("//a");
 
+            if (nodes == null) return links;
+
             foreach (HtmlNode link in nodes)
             {
                 try

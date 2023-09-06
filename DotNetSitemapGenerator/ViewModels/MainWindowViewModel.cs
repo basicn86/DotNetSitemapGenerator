@@ -6,12 +6,14 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace DotNetSitemapGenerator.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
         private int MaxDepth = 1200;
+        private CancellationTokenSource? _CancellationTokenSource;
         public string RequestedURL { get; set; } = "http://books.localhost";
         #region ViewModels
         private CurrentOperationViewModel _CurrentOperationViewModel { get; }
@@ -48,6 +50,8 @@ namespace DotNetSitemapGenerator.ViewModels
 
         public async void StartGenerating()
         {
+            _CancellationTokenSource = new CancellationTokenSource();
+
             CurrentOperationViewModel.CurrentOperation = "Starting...";
             List<Uri> goodUris = new List<Uri>();
             List<Uri> badUris = new List<Uri>();
@@ -79,6 +83,7 @@ namespace DotNetSitemapGenerator.ViewModels
                 while (goodUris.Count < MaxDepth && queuedUris.Count != 0)
                 {
                     await Task.Delay(TimeSpan.FromMilliseconds(1));
+                    _CancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                     Uri uri = queuedUris.Dequeue();
 
@@ -116,9 +121,11 @@ namespace DotNetSitemapGenerator.ViewModels
                 await GenerateSiteMapAsync(goodUris);
 
                 //Finished
+                _CancellationTokenSource = null;
                 CurrentOperationViewModel.CurrentOperation = "Done!";
             } catch (Exception ex)
             {
+                _CancellationTokenSource = null;
                 CurrentOperationViewModel.CurrentOperation = "Error: " + ex.Message;
             }
         }
@@ -132,6 +139,11 @@ namespace DotNetSitemapGenerator.ViewModels
             StreamWriter writer = new StreamWriter(SaveDirectoryViewModel.SaveDirectory);
             await writer.WriteAsync(sitemap);
             writer.Close();
+        }
+
+        public void CancelGenerating()
+        {
+            _CancellationTokenSource?.Cancel();
         }
 
         public async void SetSaveFile()

@@ -36,7 +36,7 @@
 		</Grid>
 		<StackPanel Spacing="10" Orientation="Horizontal" HorizontalAlignment="Center">
 			<Button Command="{Binding StartGenerating}">Start</Button>
-			<Button>Cancel</Button>
+			<Button Command="{Binding CancelGenerating}">Cancel</Button>
 		</StackPanel>
 		<TextBlock Text="{Binding CurrentOperationViewModel.CurrentOperation}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		<ProgressBar Value="{Binding CurrentProgessViewModel.CurrentProgress}" Height="12" Width="500"/>

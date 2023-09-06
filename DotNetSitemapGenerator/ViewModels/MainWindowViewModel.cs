@@ -64,7 +64,7 @@ namespace DotNetSitemapGenerator.ViewModels
                 foreach (Uri uri in links)
                 {
                     //if the uri is already enqueued, do not enqueue it again
-                    if (queuedUris.Contains(uri)) continue;
+                    if (queuedUris.Contains(uri) || goodUris.Contains(uri)) continue;
                     queuedUris.Enqueue(uri);
                 }
 

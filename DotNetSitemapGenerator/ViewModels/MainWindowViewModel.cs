@@ -95,6 +95,9 @@ namespace DotNetSitemapGenerator.ViewModels
                         WebPage page = await HttpDownloader.DownloadPageAsync(uri);
                         goodUris.Add(page.Uri);
 
+                        //if the page was a redirect add "uri" to the bad uri list
+                        if (page.Redirected) badUris.Add(uri);
+
                         //parse the html
                         parser = new HtmlParser(page);
 

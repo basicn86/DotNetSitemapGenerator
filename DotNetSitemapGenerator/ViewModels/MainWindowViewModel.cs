@@ -63,6 +63,8 @@ namespace DotNetSitemapGenerator.ViewModels
                 List<Uri> links = parser.GetLinks();
                 foreach (Uri uri in links)
                 {
+                    //if the uri is already enqueued, do not enqueue it again
+                    if (queuedUris.Contains(uri)) continue;
                     queuedUris.Enqueue(uri);
                 }
 

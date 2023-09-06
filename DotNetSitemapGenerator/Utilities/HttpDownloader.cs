@@ -30,7 +30,7 @@ namespace DotNetSitemapGenerator.Utilities
             client.Timeout = TimeSpan.FromSeconds(30);
         }
 
-        public static async Task<WebPage> DownloadStringAsync(Uri uri)
+        public static async Task<WebPage> DownloadPageAsync(Uri uri)
         {
             WebPage page = new WebPage();
             HttpResponseMessage response = await client.GetAsync(uri);

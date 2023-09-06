@@ -18,9 +18,14 @@
 		<TextBox Text="{Binding RequestedURL}" Watermark="URL (ex: https://example.com)" Width="500"></TextBox>
 		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
 			<TextBox Text="{Binding SaveDirectoryViewModel.SaveDirectory}" Watermark="Save Directory" Width="420"></TextBox>
-			<Button Command="{Binding SaveFile}">Open</Button>
+			<Button Command="{Binding SetSaveFile}">Open</Button>
 		</StackPanel>
-		<Button Command="{Binding ButtonClick}">Click me</Button>
+		<StackPanel Orientation="Horizontal">
+		    <Label VerticalAlignment="Center">Max Depth</Label>
+		    <TextBox Width="50" Watermark="Max Depth"></TextBox>
+		</StackPanel>
+		<Button Command="{Binding StartGenerating}">Click me</Button>
 		<TextBlock Text="{Binding CurrentOperationViewModel.CurrentOperation}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+		<ProgressBar Value="{Binding CurrentProgessViewModel.CurrentProgress}" Height="12" Width="500"/>
     </StackPanel>
 </Window>

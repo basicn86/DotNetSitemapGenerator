@@ -5,12 +5,13 @@ using Avalonia.Dialogs;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using System.Collections.Generic;
+using System.IO;
 
 namespace DotNetSitemapGenerator.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private int MaxDepth = 100;
+        private int MaxDepth = 1200;
         public string RequestedURL { get; set; } = "http://books.localhost";
         #region ViewModels
         private CurrentOperationViewModel _CurrentOperationViewModel { get; }
@@ -49,7 +50,7 @@ namespace DotNetSitemapGenerator.ViewModels
             try
             {
                 //if the save directory is null or empty, then throw an exception
-                //if (string.IsNullOrEmpty(SaveDirectoryViewModel.SaveDirectory)) throw new Exception("Save directory cannot be null or empty");
+                if (string.IsNullOrEmpty(SaveDirectoryViewModel.SaveDirectory)) throw new Exception("Save directory cannot be null or empty");
 
                 WebPage mainPage = await HttpDownloader.DownloadPageAsync(new Uri(RequestedURL));
 
@@ -92,7 +93,7 @@ namespace DotNetSitemapGenerator.ViewModels
                         }
                     } catch (Exception ex)
                     {
-                        badUris.Add(uri);
+                        badUris.Add(uri); //bad URIs get sent to this list
                     }
 
                     //update the progress
@@ -102,6 +103,18 @@ namespace DotNetSitemapGenerator.ViewModels
             {
                 CurrentOperationViewModel.CurrentOperation = "Error: " + ex.Message;
             }
+
+            CurrentProgessViewModel.CurrentProgress = 100;
+            CurrentOperationViewModel.CurrentOperation = "Generating sitemap";
+
+            //generate the sitemap
+            string sitemap = SitemapGenerator.GenerateSitemap(goodUris);
+
+            //save it to a file asynchronously
+            CurrentOperationViewModel.CurrentOperation = "Saving sitemap";
+            StreamWriter writer = new StreamWriter(SaveDirectoryViewModel.SaveDirectory);
+            await writer.WriteAsync(sitemap);
+            writer.Close();
 
             CurrentOperationViewModel.CurrentOperation = "Done!";
         }

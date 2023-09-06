@@ -37,6 +37,12 @@ namespace DotNetSitemapGenerator.Utilities
                     //skip mailto links
                     if (href.StartsWith("mailto:")) continue;
 
+                    //create the uri
+                    Uri uri = new Uri(page.Uri, href);
+
+                    //if the hostname (authority) does not match, continue
+                    if (uri.Host != page.Uri.Host) continue;
+
                     links.Add(new Uri(page.Uri, href));
                 }
                 catch (Exception)

@@ -113,14 +113,7 @@ namespace DotNetSitemapGenerator.ViewModels
                 CurrentProgessViewModel.CurrentProgress = 100;
                 CurrentOperationViewModel.CurrentOperation = "Generating sitemap";
 
-                //generate the sitemap
-                string sitemap = SitemapGenerator.GenerateSitemap(goodUris);
-                //save it to a file asynchronously
-                CurrentOperationViewModel.CurrentOperation = "Saving sitemap";
-                StreamWriter writer = new StreamWriter(SaveDirectoryViewModel.SaveDirectory);
-                await writer.WriteAsync(sitemap);
-                writer.Close();
-
+                await GenerateSiteMapAsync(goodUris);
 
                 //Finished
                 CurrentOperationViewModel.CurrentOperation = "Done!";
@@ -128,6 +121,17 @@ namespace DotNetSitemapGenerator.ViewModels
             {
                 CurrentOperationViewModel.CurrentOperation = "Error: " + ex.Message;
             }
+        }
+
+        private async Task GenerateSiteMapAsync(List<Uri> uris)
+        {
+            //generate the sitemap
+            string sitemap = SitemapGenerator.GenerateSitemap(uris);
+            //save it to a file asynchronously
+            CurrentOperationViewModel.CurrentOperation = "Saving sitemap";
+            StreamWriter writer = new StreamWriter(SaveDirectoryViewModel.SaveDirectory);
+            await writer.WriteAsync(sitemap);
+            writer.Close();
         }
 
         public async void SetSaveFile()

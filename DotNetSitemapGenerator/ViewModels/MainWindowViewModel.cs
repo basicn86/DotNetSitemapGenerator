@@ -22,6 +22,11 @@ namespace DotNetSitemapGenerator.ViewModels
         private SaveDirectoryViewModel _SaveDirectoryViewModel { get; }
         private CurrentProgessViewModel _CurrentProgessViewModel { get; }
         private MaxDepthViewModel _MaxDepthViewModel { get; }
+        private CrawlDelayViewModel _CrawlDelayViewModel { get; }
+        public CrawlDelayViewModel CrawlDelayViewModel
+        {
+            get { return _CrawlDelayViewModel; }
+        }
 
         public MaxDepthViewModel MaxDepthViewModel
         {
@@ -48,6 +53,7 @@ namespace DotNetSitemapGenerator.ViewModels
             _SaveDirectoryViewModel = new SaveDirectoryViewModel();
             _CurrentProgessViewModel = new CurrentProgessViewModel();
             _MaxDepthViewModel = new MaxDepthViewModel();
+            _CrawlDelayViewModel = new CrawlDelayViewModel();
         }
 
         public async void StartGenerating()
@@ -84,7 +90,7 @@ namespace DotNetSitemapGenerator.ViewModels
 
                 while (goodUris.Count < MaxDepth && queuedUris.Count != 0)
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(1));
+                    await Task.Delay(TimeSpan.FromMilliseconds((int)CrawlDelayViewModel.CrawlDelay));
                     _CancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                     Uri uri = queuedUris.Dequeue();

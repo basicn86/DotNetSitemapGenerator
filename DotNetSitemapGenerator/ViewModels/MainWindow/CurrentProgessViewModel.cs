@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotNetSitemapGenerator.ViewModels
+namespace DotNetSitemapGenerator.ViewModels.MainWindow
 {
     public class CurrentProgessViewModel : INotifyPropertyChanged
     {

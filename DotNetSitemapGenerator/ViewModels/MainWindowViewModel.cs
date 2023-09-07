@@ -7,6 +7,7 @@ using Avalonia.Platform.Storage;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using DotNetSitemapGenerator.ViewModels.MainWindow;
 
 namespace DotNetSitemapGenerator.ViewModels
 {

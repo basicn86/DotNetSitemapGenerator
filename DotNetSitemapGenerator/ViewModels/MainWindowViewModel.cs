@@ -1,13 +1,14 @@
 ﻿using DotNetSitemapGenerator.Utilities;
 using System;
 using System.Threading.Tasks;
-using Avalonia.Dialogs;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using DotNetSitemapGenerator.ViewModels.MainWindow;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace DotNetSitemapGenerator.ViewModels
 {
@@ -152,21 +153,32 @@ namespace DotNetSitemapGenerator.ViewModels
 
         public async void SetSaveFile()
         {
-            var dialog = new SaveFileDialog()
+            try
             {
-                Title = "Save Sitemap",
-                InitialFileName = "sitemap.xml",
-                DefaultExtension = "xml"
-            };
+                var file = await DoSaveFilePickerAsync();
+                if (file is null) return;
 
-            //open the dialog
-            var result = await dialog.ShowAsync(new Window());
-
-            if (result != null)
+                if (file.Path != null)
+                {
+                    SaveDirectoryViewModel.SaveDirectory = file.Path.AbsolutePath;
+                    CurrentOperationViewModel.CurrentOperation = "Saving to " + file.Path.AbsolutePath;
+                }
+            } catch (Exception ex)
             {
-                SaveDirectoryViewModel.SaveDirectory = result;
-                CurrentOperationViewModel.CurrentOperation = "Saving to " + result;
+                CurrentOperationViewModel.CurrentOperation = "Error: " + ex.Message;
             }
+        }
+
+        private async Task<IStorageFile?> DoSaveFilePickerAsync()
+        {
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+                desktop.MainWindow?.StorageProvider is not { } provider)
+                throw new NullReferenceException("Missing StorageProvider instance.");
+
+            return await provider.SaveFilePickerAsync(new FilePickerSaveOptions()
+            {
+                Title = "Save Text File"
+            });
         }
     }
 }

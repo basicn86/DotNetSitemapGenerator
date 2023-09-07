@@ -8,7 +8,7 @@ A simple XML sitemap generator, powered by the .NET framework, Avalonia, and Htm
 4. User Friendly Interface
 5. Standalone Client-Side Desktop Application
 ## Technology Stack
-###Avalonia
+### Avalonia
 Our XML sitemap generator is built on the Avalonia framework, an open-source cross-platform GUI framework for .NET that enables the creation of native user interfaces that run on Windows, Mac, and Linux. Avalonia ensures a consistent and responsive user experience across different operating systems.
-###Html Agility Pack
+### Html Agility Pack
 To parse and analyze web pages efficiently, we leverage the Html Agility Pack, a popular open-source library for HTML document parsing in C#. This allows our application to extract links from pages and generate accurate sitemaps.

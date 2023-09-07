@@ -1,13 +1,14 @@
 ﻿using DotNetSitemapGenerator.Utilities;
 using System;
 using System.Threading.Tasks;
-using Avalonia.Dialogs;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using DotNetSitemapGenerator.ViewModels.MainWindow;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace DotNetSitemapGenerator.ViewModels
 {
@@ -21,6 +22,11 @@ namespace DotNetSitemapGenerator.ViewModels
         private SaveDirectoryViewModel _SaveDirectoryViewModel { get; }
         private CurrentProgessViewModel _CurrentProgessViewModel { get; }
         private MaxDepthViewModel _MaxDepthViewModel { get; }
+        private CrawlDelayViewModel _CrawlDelayViewModel { get; }
+        public CrawlDelayViewModel CrawlDelayViewModel
+        {
+            get { return _CrawlDelayViewModel; }
+        }
 
         public MaxDepthViewModel MaxDepthViewModel
         {
@@ -47,6 +53,7 @@ namespace DotNetSitemapGenerator.ViewModels
             _SaveDirectoryViewModel = new SaveDirectoryViewModel();
             _CurrentProgessViewModel = new CurrentProgessViewModel();
             _MaxDepthViewModel = new MaxDepthViewModel();
+            _CrawlDelayViewModel = new CrawlDelayViewModel();
         }
 
         public async void StartGenerating()
@@ -83,7 +90,7 @@ namespace DotNetSitemapGenerator.ViewModels
 
                 while (goodUris.Count < MaxDepth && queuedUris.Count != 0)
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(1));
+                    await Task.Delay(TimeSpan.FromMilliseconds((int)CrawlDelayViewModel.CrawlDelay));
                     _CancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                     Uri uri = queuedUris.Dequeue();
@@ -152,21 +159,32 @@ namespace DotNetSitemapGenerator.ViewModels
 
         public async void SetSaveFile()
         {
-            var dialog = new SaveFileDialog()
+            try
             {
-                Title = "Save Sitemap",
-                InitialFileName = "sitemap.xml",
-                DefaultExtension = "xml"
-            };
+                var file = await DoSaveFilePickerAsync();
+                if (file is null) return;
 
-            //open the dialog
-            var result = await dialog.ShowAsync(new Window());
-
-            if (result != null)
+                if (file.Path != null)
+                {
+                    SaveDirectoryViewModel.SaveDirectory = file.Path.AbsolutePath;
+                    CurrentOperationViewModel.CurrentOperation = "Saving to " + file.Path.AbsolutePath;
+                }
+            } catch (Exception ex)
             {
-                SaveDirectoryViewModel.SaveDirectory = result;
-                CurrentOperationViewModel.CurrentOperation = "Saving to " + result;
+                CurrentOperationViewModel.CurrentOperation = "Error: " + ex.Message;
             }
+        }
+
+        private async Task<IStorageFile?> DoSaveFilePickerAsync()
+        {
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+                desktop.MainWindow?.StorageProvider is not { } provider)
+                throw new NullReferenceException("Missing StorageProvider instance.");
+
+            return await provider.SaveFilePickerAsync(new FilePickerSaveOptions()
+            {
+                Title = "Save Text File"
+            });
         }
     }
 }

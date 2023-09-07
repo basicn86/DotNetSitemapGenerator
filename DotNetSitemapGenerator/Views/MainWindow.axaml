@@ -43,8 +43,8 @@
 				<Label VerticalAlignment="Center">Max Depth</Label>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Grid.Column="1">
-				<TextBox Margin="5" Width="50" Watermark=""></TextBox>
-				<Label VerticalAlignment="Center">Crawl Delay</Label>
+				<TextBox Text="{Binding CrawlDelayViewModel.CrawlDelay}" Margin="5" Width="50"></TextBox>
+				<Label VerticalAlignment="Center">Crawl Delay (ms)</Label>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
 				<CheckBox IsChecked="True" Margin="5"></CheckBox>
